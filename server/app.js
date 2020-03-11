@@ -31,17 +31,18 @@ mongoose.connect(dbURL, mongooseOptions, (err) => {
 
 let redisURL = {
   hostname: 'redis-11700.c16.us-east-1-3.ec2.cloud.redislabs.com',
-  port: '11700'
+  port: '11700',
 };
 
 let redisPASS = 'HEuLhPF37lyNzaI9nLlrtMqHtofEoocq';
+const passIndex = 1;
 
 if (process.env.REDISCLOUD_URL) {
   redisURL = url.parse(process.env.REDISCLOUD_URL);
-  redisPASS = redisURL.auth.split(':')[1];
-};
+  redisPASS = redisURL.auth.split(':')[passIndex];
+}
 
-let redisClient = redis.createClient({
+const redisClient = redis.createClient({
   host: redisURL.hostname,
   port: redisURL.port,
   password: redisPASS,
@@ -70,7 +71,7 @@ app.use(session({
     httpOnly: true,
   },
 }));
-app.engine('handlebars', expressHandlebars({defaultLayout: 'main'}));
+app.engine('handlebars', expressHandlebars({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/../views`);
 app.use(cookieParser());
